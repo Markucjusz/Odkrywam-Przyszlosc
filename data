@@ -1,1 +1,7 @@
-
+[
+  {
+    "title":"Witamy na stronie",
+    "description":"Automatyczne wiadomości pojawią się po uruchomieniu GitHub Actions.",
+    "link":"#"
+  }
+]
