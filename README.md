@@ -1,2 +1,0 @@
-# Odkrywam-Przyszlosc
-
