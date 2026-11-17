@@ -138,11 +138,34 @@ footer{
         font-size:2.4rem;
     }
 }
+    .stars{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+    background-image:
+    radial-gradient(2px 2px at 20px 30px,#fff,transparent),
+    radial-gradient(2px 2px at 40px 70px,#fff,transparent),
+    radial-gradient(1px 1px at 90px 40px,#fff,transparent),
+    radial-gradient(2px 2px at 130px 80px,#fff,transparent);
+    background-size:200px 200px;
+    animation:moveStars 60s linear infinite;
+    opacity:.35;
+}
+
+@keyframes moveStars{
+    from{transform:translateY(0);}
+    to{transform:translateY(200px);}
+}
 </style>
 </head>
 
 <body>
 
+<div class="stars"></div>
+    
 <section class="hero">
 <h1 class="gradient">🚀 Odkrywam Przyszłość</h1>
 <p>
