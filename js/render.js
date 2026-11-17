@@ -118,3 +118,34 @@ function renderAll(){
     renderCategory("earth");
 
 }
+document
+.addEventListener(
+"input",
+(event)=>{
+
+  if(
+    event.target.id !==
+    "search"
+  ) return;
+
+  const text =
+    event.target.value
+    .toLowerCase();
+
+  document
+  .querySelectorAll(".card")
+  .forEach(card => {
+
+    card.style.display =
+
+      card.textContent
+      .toLowerCase()
+      .includes(text)
+
+      ? ""
+
+      : "none";
+
+  });
+
+});
