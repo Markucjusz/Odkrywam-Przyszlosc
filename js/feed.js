@@ -2,89 +2,93 @@ const ARTICLES = [];
 
 function addArticle(article){
 
-    ARTICLES.push(article);
+  ARTICLES.push(article);
 
 }
 
 async function loadFeed(feed, category){
 
-    try{
+  try {
 
-        const response =
-            await fetch(
-                RSS_PROXY +
-                encodeURIComponent(feed.url)
-            );
+    const response = await fetch(
 
-        const data =
-            await response.json();
+      RSS_PROXY +
+      encodeURIComponent(feed.url)
 
-        data.items
-            .slice(0,10)
-            .forEach(item=>{
+    );
 
-                addArticle({
+    const data =
+      await response.json();
 
-                    category,
+    data.items
+      .slice(0,8)
+      .forEach(item => {
 
-                    title:item.title,
+        addArticle({
 
-                    description:
-                    (item.description || "")
-                    .replace(/<[^>]*>/g,'')
+          category,
 
-                    .substring(0,250),
+          title:
+            item.title ||
 
-                    url:item.link,
+            "Brak tytułu",
 
-                    image:
-                    item.thumbnail || "",
+          description:
 
-                    source:
-                    feed.source,
+            (item.description || "")
 
-                    date:
-                    item.pubDate
+            .replace(/<[^>]+>/g,'')
 
-                });
+            .substring(0,250),
 
-            });
+          image:
+            item.thumbnail || "",
 
-    }
+          url:
+            item.link,
 
-    catch(error){
-
-        console.error(
+          source:
             feed.source,
-            error
-        );
 
-    }
+          date:
+            item.pubDate
+
+        });
+
+      });
+
+  }
+
+  catch(error){
+
+    console.error(error);
+
+  }
 
 }
 
 async function loadAllFeeds(){
 
-    const jobs = [];
+  const jobs = [];
 
-    Object.entries(FEEDS)
-    .forEach(([category,feeds])=>{
+  Object.entries(FEEDS)
+    .forEach(([category, feeds]) => {
 
-        feeds.forEach(feed=>{
+      feeds.forEach(feed => {
 
-            jobs.push(
-                loadFeed(
-                    feed,
-                    category
-                )
-            );
+        jobs.push(
+          loadFeed(
+            feed,
+            category
+          )
+        );
 
-        });
+      });
 
     });
 
-    await Promise.all(jobs);
+  await Promise.all(jobs);
 
-    renderAll();
+  renderAll();
 
 }
