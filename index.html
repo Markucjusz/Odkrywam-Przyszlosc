@@ -1,13 +1,21 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>🚀 Odkrywam Przyszłość</title>
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1">
 
-<link rel="stylesheet" href="css/style.css">
+<title>
+🚀 Odkrywam Przyszłość
+</title>
+
+<link
+rel="stylesheet"
+href="css/style.css">
 
 </head>
 
@@ -15,90 +23,152 @@
 
 <header class="hero">
 
-<h1>🚀 Odkrywam Przyszłość</h1>
+<h1>
+🚀 Odkrywam Przyszłość
+</h1>
 
 <p>
-Nauka • AI • Kosmos • Biologia • Technologia
+Nauka • AI • Kosmos • Technologia
 </p>
 
 </header>
 
 <nav>
 
-<a href="#discovery">Odkrycie Dnia</a>
-<a href="#news">Newsy</a>
-<a href="#ai">AI</a>
-<a href="#space">Kosmos</a>
-<a href="#biology">Biologia</a>
-<a href="#technology">Technologia</a>
-<a href="#earth">Ziemia</a>
+<a href="#discovery">
+Odkrycie Dnia
+</a>
 
-<button id="theme-toggle">
+<a href="#ai">
+AI
+</a>
+
+<a href="#space">
+Kosmos
+</a>
+
+<a href="#biology">
+Biologia
+</a>
+
+<a href="#technology">
+Technologia
+</a>
+
+<a href="#earth">
+Ziemia
+</a>
+
+<button
+id="theme-toggle">
+
 🌙
+
 </button>
 
 </nav>
 
-<section class="section" id="discovery">
+<section
+class="section"
+id="discovery">
 
-<h2>⭐ Odkrycie Dnia</h2>
+<h2>
+⭐ Odkrycie Dnia
+</h2>
 
-<div id="apod-card" class="featured-card">
+<div class="featured-card">
 
-Ładowanie danych NASA...
+<h3
+id="discovery-title">
+
+Ładowanie...
+
+</h3>
+
+<p
+id="discovery-text">
+
+Pobieranie danych...
+
+</p>
 
 </div>
 
 </section>
 
-<section class="section" id="news">
+<section
+class="section"
+id="ai">
 
-<h2>📰 Najnowsze wiadomości</h2>
-
-<input
-type="text"
-id="search"
-placeholder="Szukaj artykułu...">
-
-<div id="news-list"></div>
-
-</section>
-
-<section class="section" id="ai">
 <h2>🤖 AI</h2>
-<div class="cards" id="ai-content"></div>
+
+<div
+class="cards"
+id="ai-content">
+</div>
+
 </section>
 
-<section class="section" id="space">
+<section
+class="section"
+id="space">
+
 <h2>🚀 Kosmos</h2>
-<div class="cards" id="space-content"></div>
+
+<div
+class="cards"
+id="space-content">
+</div>
+
 </section>
 
-<section class="section" id="biology">
+<section
+class="section"
+id="biology">
+
 <h2>🧬 Biologia</h2>
-<div class="cards" id="biology-content"></div>
+
+<div
+class="cards"
+id="biology-content">
+</div>
+
 </section>
 
-<section class="section" id="technology">
+<section
+class="section"
+id="technology">
+
 <h2>💻 Technologia</h2>
-<div class="cards" id="technology-content"></div>
+
+<div
+class="cards"
+id="technology-content">
+</div>
+
 </section>
 
-<section class="section" id="earth">
+<section
+class="section"
+id="earth">
+
 <h2>🌍 Ziemia</h2>
-<div class="cards" id="earth-content"></div>
+
+<div
+class="cards"
+id="earth-content">
+</div>
+
 </section>
 
-<footer>
-
-© Odkrywam Przyszłość
-
-</footer>
-
-<script src="data/sections.js"></script>
+<script src="data/config.js"></script>
+<script src="js/render.js"></script>
+<script src="js/feed.js"></script>
 <script src="js/theme.js"></script>
-<script src="js/nasa.js"></script>
-<script src="js/app.js"></script>
+
+<script>
+loadAllFeeds();
+</script>
 
 </body>
 
