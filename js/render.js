@@ -78,19 +78,32 @@ function renderCategory(category){
 
 function renderDiscovery(){
 
-    const article = ARTICLES[0];
+  const discovery =
 
-    if(!article) return;
+    ARTICLES.find(
+      article =>
+      article.category === "space"
+    )
 
-    document.getElementById(
-        "discovery-title"
-    ).textContent =
-    article.title;
+    ||
 
-    document.getElementById(
-        "discovery-text"
-    ).textContent =
-    article.description;
+    ARTICLES[0];
+
+  if(!discovery) return;
+
+  document
+    .getElementById(
+      "discovery-title"
+    )
+    .textContent =
+    discovery.title;
+
+  document
+    .getElementById(
+      "discovery-text"
+    )
+    .textContent =
+    discovery.description;
 
 }
 
