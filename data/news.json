@@ -1,11 +1,114 @@
 [
   {
-    "title": "Witamy na stronie Odkrywam Przyszłość",
-    "description": "Automatyczne wiadomości naukowe pojawią się po uruchomieniu GitHub Actions.",
-    "link": "#",
+    "title": "This remarkable new material could solve a major carbon capture problem",
+    "description": "Scientists have developed a new carbon capture material that turns moisture from an obstacle into an advantage, potentially solving a major problem with removing CO2 from industrial emissions. The material works even in ...",
+    "link": "https://www.sciencedaily.com/releases/2026/11/261116023405.htm",
     "category": "Nauka",
+    "date": "17.11.2026"
+  },
+  {
+    "title": "Ozempic and Mounjaro may have a surprising effect on your brain",
+    "description": "Blockbuster weight loss drugs like Ozempic and Mounjaro may do more than help people shed pounds, with growing evidence suggesting they could also influence brain health. Although studies have linked GLP-1 medications to...",
+    "link": "https://www.sciencedaily.com/releases/2026/11/261116023401.htm",
+    "category": "Nauka",
+    "date": "17.11.2026"
+  },
+  {
+    "title": "NASA smashed into an asteroid. Now Hera has revealed a strange new world",
+    "description": "A European spacecraft has revealed a mysterious, crater-covered side of the asteroid Didymos as it prepares to investigate the aftermath of NASA’s historic 2022 asteroid impact. The mission could uncover new clues about ...",
+    "link": "https://www.sciencedaily.com/releases/2026/11/261116023351.htm",
+    "category": "Nauka",
+    "date": "16.11.2026"
+  },
+  {
+    "title": "A mysterious twist in the universe’s oldest light could reveal new physics",
+    "description": "Scientists have spotted hints of a mysterious rotation in the universe’s oldest light that could reveal new physics and shed light on dark matter and dark energy. A new technique developed at UC San Diego could help rule...",
+    "link": "https://www.sciencedaily.com/releases/2026/11/261116023348.htm",
+    "category": "Nauka",
+    "date": "17.11.2026"
+  },
+  {
+    "title": "APOD: 2026 November 18 – An M-class Solar Flare",
+    "description": "APOD Science APOD APOD: 2026 November 18 – An… Today’s APOD Archive Submissions Index Search Calendar RSS Education About Discuss   APOD Astronomy Picture of the Day Discover the cosmos! Each day a different image or pho...",
+    "link": "https://science.nasa.gov/image-article/apod-2026-november-18-an-m-class-solar-flare/",
+    "category": "Kosmos",
     "date": "18.11.2026"
+  },
+  {
+    "title": "Sierra Snow Season Spins Up",
+    "description": "A widespread, early-season snowstorm blanketed California’s mountains in white in mid-November 2026....",
+    "link": "https://science.nasa.gov/earth/earth-observatory/sierra-snow-season-spins-up/",
+    "category": "Kosmos",
+    "date": "18.11.2026"
+  },
+  {
+    "title": "NASA Launches Nuclear Power Systems Student Contest",
+    "description": "NASA’s Power to Explore Student Challenge kicked off Tuesday, Nov. 17. The science, engineering, technology, and mathematics (STEM) challenge invites kindergarten through 12th grade students in the United States to learn...",
+    "link": "https://science.nasa.gov/centers-and-facilities/glenn/nasa-launches-nuclear-power-systems-student-contest/",
+    "category": "Kosmos",
+    "date": "17.11.2026"
+  },
+  {
+    "title": "NASA Space Apps Challenge Breaks Global Hackathon Records  ",
+    "description": "On Nov. 14 and 15, NASA held the annual Space Apps Challenge with a record-breaking 181,835 registered participants taking part in 593 events around the world. The annual hackathon invites participants to use NASA’s open...",
+    "link": "https://science.nasa.gov/open-science/nasa-space-apps-challenge-breaks-global-hackathon-records/",
+    "category": "Kosmos",
+    "date": "17.11.2026"
+  },
+  {
+    "title": "Scientists tracked kids for 8 years. What they found about screen time was surprising",
+    "description": "A surprising Finnish study found that children who spent more time using screens tended to have better cognitive processing abilities as teenagers, challenging the assumption that screen time is always harmful. Researche...",
+    "link": "https://www.sciencedaily.com/releases/2026/11/261116014725.htm",
+    "category": "AI",
+    "date": "17.11.2026"
+  },
+  {
+    "title": "Quantum computers are getting too powerful to check. Scientists have a solution",
+    "description": "Scientists have developed a new way to determine whether quantum simulations can be trusted, solving a growing problem as quantum computers become too powerful for conventional machines to check. Demonstrated on a 51-qub...",
+    "link": "https://www.sciencedaily.com/releases/2026/11/261115085557.htm",
+    "category": "AI",
+    "date": "17.11.2026"
+  },
+  {
+    "title": "AI discovers a hidden heart signal that could predict sudden death",
+    "description": "Scientists have uncovered a hidden warning sign in routine heart scans that could predict sudden cardiac death before it strikes. The AI-powered discovery outperformed conventional screening methods, potentially revealin...",
+    "link": "https://www.sciencedaily.com/releases/2026/11/261112230456.htm",
+    "category": "AI",
+    "date": "15.11.2026"
+  },
+  {
+    "title": "Tiny flaws in diamonds could unlock a quantum computing revolution",
+    "description": "Scientists have discovered a faster way to identify diamond-based materials that could power quantum computers and sensors at room temperature. The breakthrough has already revealed promising new quantum building blocks ...",
+    "link": "https://www.sciencedaily.com/releases/2026/11/261111005855.htm",
+    "category": "AI",
+    "date": "13.11.2026"
+  },
+  {
+    "title": "An ancient virus may help explain what makes the human brain different",
+    "description": "A virus that infected chimpanzees millions of years ago may have helped shape one of the most important differences between humans and our closest relatives: how our brains develop. Scientists at Lund University discover...",
+    "link": "https://www.sciencedaily.com/releases/2026/11/261114202230.htm",
+    "category": "Biologia",
+    "date": "16.11.2026"
+  },
+  {
+    "title": "Hidden ecosystem: Scientists discover 245 animals living inside a single deep-sea rock",
+    "description": "Deep beneath the Pacific Ocean, scientists have discovered tiny hidden ecosystems inside metal-rich rocks that take millions of years to form. Researchers examined 244 nodules and found more than 4,100 animals living in ...",
+    "link": "https://www.sciencedaily.com/releases/2026/11/261114202133.htm",
+    "category": "Biologia",
+    "date": "16.11.2026"
+  },
+  {
+    "title": "Dinosaurs may have been eating seaweed 100 million years ago",
+    "description": "Dinosaurs may have been snacking on seaweed and other ocean foods more than 100 million years ago, according to surprising new evidence hidden in their fossilized teeth. Researchers discovered chemical signatures suggest...",
+    "link": "https://www.sciencedaily.com/releases/2026/11/261112230502.htm",
+    "category": "Biologia",
+    "date": "15.11.2026"
+  },
+  {
+    "title": "Scientists discover a bizarre paradox among endangered penguins",
+    "description": "A groundbreaking drone survey has revealed a startling split in the fate of New Zealand's endangered Erect-crested penguins. While one population has remained stable for decades, another has declined by more than 40%, ap...",
+    "link": "https://www.sciencedaily.com/releases/2026/11/261112230458.htm",
+    "category": "Biologia",
+    "date": "15.11.2026"
   }
 ]
-
-
