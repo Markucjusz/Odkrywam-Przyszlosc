@@ -23,8 +23,8 @@ const feeds = [
 
 function extractImage(item) {
     if (item.enclosure && item.enclosure.url) return item.enclosure.url;
-    if (item.mediaContent && item.mediaContent.$ && item.mediaContent.$.url) return item.mediaContent.$.url;
-    if (item.mediaThumbnail && item.mediaThumbnail.$ && item.mediaThumbnail.$.url) return item.mediaThumbnail.$.url;
+    if (item.mediaContent && item.mediaContent.$&& item.mediaContent.$.url) return item.mediaContent.$.url;
+    if (item.mediaThumbnail && item.mediaThumbnail.$&& item.mediaThumbnail.$.url) return item.mediaThumbnail.$.url;
     const html = item.content || item["content:encoded"] || "";
     const match = html.match(/<img[^>]+src="([^">]+)"/);
     return match ? match[1] : "";
