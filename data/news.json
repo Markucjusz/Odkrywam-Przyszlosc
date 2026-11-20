@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Teleskop Jamesa Webba rejestruje atmosferę skalistej egzoplanety w układzie TRAPPIST-1",
+    "description": "Nowe pomiary spektroskopowe w podczerwieni dostarczają najdokładniejszych dotąd danych na temat składu chemicznego i temperatury powierzchni odległych światów.",
+    "fullDescription": "Nowe pomiary spektroskopowe w podczerwieni dostarczają najdokładniejszych dotąd danych na temat składu chemicznego i temperatury powierzchni odległych światów. Zespół badawczy wykorzystał instrument MIRI, aby oddzielić promieniowanie gwiazdy macierzystej od słabego sygnału cieplnego samej planety.",
+    "link": "https://www.nasa.gov/",
+    "category": "Kosmos",
+    "source": "NASA",
+    "date": "20.11.2026",
+    "image": ""
+  },
+  {
+    "title": "Modele fundamentowe nowej generacji projektują stabilne katalizatory do wychwytywania CO2",
+    "description": "Sieci neuronowe wytrenowane na strukturach krystalicznych skracają proces symulacji kwantowych z tygodni do kilku sekund.",
+    "fullDescription": "Sieci neuronowe wytrenowane na strukturach krystalicznych skracają proces symulacji kwantowych z tygodni do kilku sekund. Odkryte związki metaloorganiczne wykazują rekordową selektywność wiązania dwutlenku węgla w temperaturze pokojowej.",
+    "link": "https://www.sciencedaily.com/",
+    "category": "AI",
+    "source": "ScienceDaily",
+    "date": "20.11.2026",
+    "image": ""
+  },
+  {
+    "title": "Syntetyczne obwody genowe pozwalają komórkom programować własną odpowiedź immunologiczną",
+    "description": "Biolodzy molekularni opracowali precyzyjny przełącznik białkowy reagujący wyłącznie na specyficzne markery mikrośrodowiska.",
+    "fullDescription": "Biolodzy molekularni opracowali precyzyjny przełącznik białkowy reagujący wyłącznie na specyficzne markery mikrośrodowiska. Rozwiązanie otwiera drogę do bezpieczniejszych terapii komórkowych o kontrolowanym czasie działania.",
+    "link": "https://www.sciencedaily.com/",
+    "category": "Biologia",
+    "source": "ScienceDaily",
+    "date": "19.11.2026",
+    "image": ""
+  },
+  {
+    "title": "Misja Euclid publikuje kolejną mapę rozkładu ciemnej materii w gromadach galaktyk",
+    "description": "Europejska Agencja Kosmiczna udostępniła pakiet danych obejmujący miliony odległych obiektów zniekształconych przez soczewkowanie grawitacyjne.",
+    "fullDescription": "Europejska Agencja Kosmiczna udostępniła pakiet danych obejmujący miliony odległych obiektów zniekształconych przez soczewkowanie grawitacyjne. Analiza pozwala z niespotykaną precyzją śledzić ewolucję wielkoskalowej struktury Wszechświata.",
+    "link": "https://www.esa.int/",
+    "category": "Kosmos",
+    "source": "ESA",
+    "date": "19.11.2026",
+    "image": ""
+  }
+]
