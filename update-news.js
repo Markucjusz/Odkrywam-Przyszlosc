@@ -13,7 +13,8 @@ const parser = new Parser({
 });
 
 const feeds = [
-    { url: "https://www.sciencedaily.com/rss/top.xml", category: "Nauka", source: "ScienceDaily" },
+    { url: "https://www.sciencedaily.com/rss/top/science.xml", category: "Nauka", source: "ScienceDaily" },
+    { url: "https://phys.org/rss-feed/", category: "Nauka", source: "Phys.org" },
     { url: "https://www.nasa.gov/news-release/feed/", category: "Kosmos", source: "NASA" },
     { url: "https://www.esa.int/rssfeed/Our_Activities/Space_Science", category: "Kosmos", source: "ESA" },
     { url: "https://www.sciencedaily.com/rss/computers_math/artificial_intelligence.xml", category: "AI", source: "ScienceDaily" },
