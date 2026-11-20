@@ -3,6 +3,11 @@ const fs = require("fs");
 const path = require("path");
 
 const parser = new Parser({
+    headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+        "Accept": "application/rss+xml, application/xml, text/xml;q=0.9, */*;q=0.8"
+    },
+    timeout: 15000,
     customFields: {
         item: [
             ["media:content", "mediaContent"],
@@ -13,18 +18,19 @@ const parser = new Parser({
 });
 
 const feeds = [
-    { url: "https://www.sciencedaily.com/rss/top/science.xml", category: "Nauka", source: "ScienceDaily" },
-    { url: "https://phys.org/rss-feed/", category: "Nauka", source: "Phys.org" },
+    { url: "https://www.nature.com/nature.rss", category: "Nauka", source: "Nature" },
+    { url: "https://news.mit.edu/rss/research", category: "Nauka", source: "MIT News" },
     { url: "https://www.nasa.gov/news-release/feed/", category: "Kosmos", source: "NASA" },
     { url: "https://www.esa.int/rssfeed/Our_Activities/Space_Science", category: "Kosmos", source: "ESA" },
     { url: "https://www.sciencedaily.com/rss/computers_math/artificial_intelligence.xml", category: "AI", source: "ScienceDaily" },
+    { url: "https://news.mit.edu/rss/topic/artificial-intelligence2", category: "AI", source: "MIT News" },
     { url: "https://www.sciencedaily.com/rss/plants_animals/biology.xml", category: "Biologia", source: "ScienceDaily" }
 ];
 
 function extractImage(item) {
     if (item.enclosure && item.enclosure.url) return item.enclosure.url;
-    if (item.mediaContent && item.mediaContent.$&& item.mediaContent.$.url) return item.mediaContent.$.url;
-    if (item.mediaThumbnail && item.mediaThumbnail.$&& item.mediaThumbnail.$.url) return item.mediaThumbnail.$.url;
+    if (item.mediaContent && item.mediaContent.$ && item.mediaContent.$.url) return item.mediaContent.$.url;
+    if (item.mediaThumbnail && item.mediaThumbnail.$ && item.mediaThumbnail.$.url) return item.mediaThumbnail.$.url;
     const html = item.content || item["content:encoded"] || "";
     const match = html.match(/<img[^>]+src="([^">]+)"/);
     return match ? match[1] : "";
@@ -37,6 +43,7 @@ async function loadNews() {
     for (const feed of feeds) {
         try {
             const rss = await parser.parseURL(feed.url);
+            console.log(`OK [${feed.category} - ${feed.source}]: pobrano ${rss.items.length} wpisów`);
 
             rss.items.slice(0, 5).forEach(item => {
                 if (!item.link || seenLinks.has(item.link)) return;
@@ -62,7 +69,7 @@ async function loadNews() {
                 });
             });
         } catch (err) {
-            console.error(`Błąd pobierania kanału ${feed.url}:`, err.message);
+            console.error(`BŁĄD [${feed.category} - ${feed.source}] (${feed.url}):`, err.message);
         }
     }
 
@@ -78,7 +85,7 @@ async function loadNews() {
         JSON.stringify(output, null, 2),
         "utf-8"
     );
-    console.log(`Zapisano ${output.length} unikalnych artykułów.`);
+    console.log(`Zapisano łącznie ${output.length} unikalnych artykułów.`);
 }
 
 loadNews();
