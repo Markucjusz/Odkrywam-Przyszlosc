@@ -114,8 +114,8 @@
   {
     "title": "Ciekawostki dostrzegły dryfujące chmury zmierzchu",
     "originalTitle": "Curiosity Spots Drifting Twilight Clouds",
-    "description": "Opis Należący do NASA łazik Curiosity uchwycił te dryfujące chmury 31 października 2026 r., w 5061. dniu marsjańskim, czyli sol, misji. Łazik wykorzystuje swoje kamery nawigacyjne do rejestrowania chm...",
-    "fullDescription": "Opis Należący do NASA łazik Curiosity uchwycił te dryfujące chmury 31 października 2026 r., w 5061. dniu marsjańskim, czyli sol, misji. Łazik wykorzystuje swoje kamery nawigacyjne do rejestrowania chmur po zachodzie słońca, zwanych chmurami zmierzchu, które pojawiają się tylko na krótki czas przy każdym upadku nad kraterem Gale, który bada od ponad […]",
+    "description": "Opis Należący do NASA łazik Curiosity Mars uchwycił te dryfujące chmury 31 października 2026 r., w 5061. marsjańskim dniu, czyli sol, misji. Łazik wykorzystuje swoje kamery nawigacyjne do rejestrowani...",
+    "fullDescription": "Opis Należący do NASA łazik Curiosity Mars uchwycił te dryfujące chmury 31 października 2026 r., w 5061. marsjańskim dniu, czyli sol, misji. Łazik wykorzystuje swoje kamery nawigacyjne do rejestrowania chmur po zachodzie słońca, zwanych chmurami zmierzchu, które pojawiają się tylko na krótki czas przy każdym upadku nad kraterem Gale, który bada od ponad […]",
     "link": "https://science.nasa.gov/photojournal/curiosity-spots-drifting-twilight-clouds/",
     "category": "Kosmos",
     "source": "NASA",
@@ -170,8 +170,8 @@
   {
     "title": "Ceremonia wręczenia nagród NASA Honor Awards jest wyrazem uznania dla pracowników Stennis Space Center",
     "originalTitle": "NASA Honor Awards Ceremony Recognizes Employees at Stennis Space Center",
-    "description": "Pracownicy biorący udział w misji NASA w Stennis Space Center agencji w pobliżu Bay St. Louis w stanie Mississippi zostali wyróżnieni podczas ceremonii wręczenia nagród Honor Awards w ośrodku 18 listo...",
-    "fullDescription": "Pracownicy biorący udział w misji NASA w Stennis Space Center agencji w pobliżu Bay St. Louis w stanie Mississippi zostali wyróżnieni podczas ceremonii wręczenia nagród Honor Awards w ośrodku 18 listopada. Nagrody wręczali Christine Powell, dyrektor centrum NASA Stennis, i Jeremy Parsons, menedżer programu Artemis agencji odpowiedzialny za zarządzanie i nadzór nad inicjatywą NASA mającą na celu powrót […]",
+    "description": "Pracownicy biorący udział w misji NASA w Stennis Space Center agencji w pobliżu Bay St. Louis w stanie Mississippi zostali uhonorowani podczas ceremonii wręczenia nagród Honor Awards w ośrodku 18 list...",
+    "fullDescription": "Pracownicy biorący udział w misji NASA w Stennis Space Center agencji w pobliżu Bay St. Louis w stanie Mississippi zostali uhonorowani podczas ceremonii wręczenia nagród Honor Awards w ośrodku 18 listopada. Nagrody wręczali Christine Powell, dyrektor centrum NASA Stennis i Jeremy Parsons, menedżer programu Artemis agencji odpowiedzialny za zarządzanie i nadzór nad inicjatywą NASA mającą na celu powrót […]",
     "link": "https://www.nasa.gov/centers-and-facilities/stennis/honor-awards-ceremony-at-stennis/",
     "category": "Kosmos",
     "source": "NASA",
@@ -280,6 +280,20 @@
     "image": ""
   },
   {
+    "title": "Po ośmioletniej odysei BepiColombo w końcu dociera do Merkurego",
+    "originalTitle": "BepiColombo finally reaches Mercury after eight-year odyssey",
+    "description": "",
+    "fullDescription": "",
+    "link": "https://www.nature.com/articles/d41586-026-03803-8",
+    "category": "Biologia",
+    "source": "Nature",
+    "lang": "en",
+    "translated": true,
+    "date": "",
+    "timestamp": 0,
+    "image": ""
+  },
+  {
     "title": "Jak sztuczna inteligencja wpływa na kariery naukowe",
     "originalTitle": "How AI is affecting science careers",
     "description": "",
@@ -313,20 +327,6 @@
     "description": "",
     "fullDescription": "",
     "link": "https://www.nature.com/articles/d41586-026-03806-5",
-    "category": "Biologia",
-    "source": "Nature",
-    "lang": "en",
-    "translated": true,
-    "date": "",
-    "timestamp": 0,
-    "image": ""
-  },
-  {
-    "title": "Oszustwo pomaga małym mrówkom ognistym przetrwać i zwyciężyć",
-    "originalTitle": "Fraud helps little fire ants to survive and conquer",
-    "description": "",
-    "fullDescription": "",
-    "link": "https://www.nature.com/articles/d41586-026-03776-8",
     "category": "Biologia",
     "source": "Nature",
     "lang": "en",
