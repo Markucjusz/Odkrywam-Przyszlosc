@@ -1,4 +1,5 @@
 const Parser = require("rss-parser");
+const translate = require("google-translate-api-x");
 const fs = require("fs");
 const path = require("path");
 
@@ -17,11 +18,14 @@ const parser = new Parser({
     }
 });
 
-// Źródła polskie (lang: "pl") oraz angielskie tłumaczone automatycznie (lang: "en")
 const feeds = [
+    // Polskojęzyczne źródła
     { url: "https://naukawpolsce.pl/rss.xml", category: "Nauka", source: "Nauka w Polsce", lang: "pl" },
     { url: "https://kopalniawiedzy.pl/rss/wszystkie", category: "Nauka", source: "Kopalnia Wiedzy", lang: "pl" },
     { url: "https://www.urania.edu.pl/rss.xml", category: "Kosmos", source: "Urania", lang: "pl" },
+    { url: "https://spidersweb.pl/feed", category: "AI", source: "Spider's Web", lang: "pl" },
+
+    // Angielskojęzyczne źródła (tłumaczone na PL)
     { url: "https://www.nasa.gov/news-release/feed/", category: "Kosmos", source: "NASA", lang: "en" },
     { url: "https://www.esa.int/rssfeed/Our_Activities/Space_Science", category: "Kosmos", source: "ESA", lang: "en" },
     { url: "https://news.mit.edu/rss/topic/artificial-intelligence2", category: "AI", source: "MIT News", lang: "en" },
@@ -37,22 +41,32 @@ function extractImage(item) {
     return match ? match[1] : "";
 }
 
-// Darmowe tłumaczenie EN -> PL bez klucza API
-async function translateToPolish(text) {
-    if (!text) return "";
-    const trimmed = text.slice(0, 900);
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+// Tłumaczenie tytułu i opisu w jednym zapytaniu (oszczędza limity zapytań)
+async function translateArticle(title, description) {
+    const cleanTitle = (title || "").trim();
+    const cleanDesc = (description || "").slice(0, 750).trim();
+    const separator = "\n###\n";
+    const payload = cleanDesc ? `${cleanTitle}${separator}${cleanDesc}` : cleanTitle;
+
     try {
-        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=pl&dt=t&q=${encodeURIComponent(trimmed)}`;
-        const res = await fetch(url);
-        if (!res.ok) return text;
-        const data = await res.json();
-        return data[0].map(part => part[0]).join("");
-    } catch {
-        return text;
+        const res = await translate(payload, { from: "en", to: "pl", forceTo: true });
+        const parts = res.text.split(/###/);
+        return {
+            title: (parts[0] || cleanTitle).trim(),
+            description: (parts[1] || cleanDesc).trim(),
+            translated: true
+        };
+    } catch (err) {
+        console.warn(`Nie udało się przetłumaczyć (${cleanTitle.slice(0, 40)}...): ${err.message}`);
+        return {
+            title: cleanTitle,
+            description: cleanDesc,
+            translated: false
+        };
     }
 }
-
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 async function loadNews() {
     let output = [];
@@ -61,7 +75,7 @@ async function loadNews() {
     for (const feed of feeds) {
         try {
             const rss = await parser.parseURL(feed.url);
-            console.log(`OK [${feed.category} - ${feed.source}]: pobrano ${rss.items.length} wpisów`);
+            console.log(`OK [${feed.lang.toUpperCase()} | ${feed.category} - ${feed.source}]: pobrano ${rss.items.length} wpisów`);
 
             for (const item of rss.items.slice(0, 4)) {
                 if (!item.link || seenLinks.has(item.link)) continue;
@@ -72,14 +86,16 @@ async function loadNews() {
                     .replace(/\s+/g, " ")
                     .trim();
 
-                let title = item.title || "";
+                let title = (item.title || "").trim();
                 let fullDescription = rawDesc;
+                let translated = false;
 
                 if (feed.lang === "en") {
-                    title = await translateToPolish(title);
-                    await sleep(250);
-                    fullDescription = await translateToPolish(rawDesc);
-                    await sleep(250);
+                    const tr = await translateArticle(title, rawDesc);
+                    title = tr.title;
+                    fullDescription = tr.description;
+                    translated = tr.translated;
+                    await sleep(600);
                 }
 
                 const shortDesc = fullDescription.length > 200
@@ -88,11 +104,14 @@ async function loadNews() {
 
                 output.push({
                     title,
+                    originalTitle: feed.lang === "en" ? (item.title || "").trim() : "",
                     description: shortDesc,
                     fullDescription,
                     link: item.link,
                     category: feed.category,
                     source: feed.source,
+                    lang: feed.lang,
+                    translated,
                     date: item.pubDate ? new Date(item.pubDate).toLocaleDateString("pl-PL") : "",
                     timestamp: item.pubDate ? new Date(item.pubDate).getTime() : 0,
                     image: extractImage(item)
@@ -115,7 +134,7 @@ async function loadNews() {
         JSON.stringify(output, null, 2),
         "utf-8"
     );
-    console.log(`Zapisano łącznie ${output.length} artykułów w języku polskim.`);
+    console.log(`Zapisano łącznie ${output.length} artykułów.`);
 }
 
 loadNews();
