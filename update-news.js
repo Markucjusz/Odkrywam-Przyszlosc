@@ -17,14 +17,15 @@ const parser = new Parser({
     }
 });
 
+// Źródła polskie (lang: "pl") oraz angielskie tłumaczone automatycznie (lang: "en")
 const feeds = [
-    { url: "https://www.nature.com/nature.rss", category: "Nauka", source: "Nature" },
-    { url: "https://news.mit.edu/rss/research", category: "Nauka", source: "MIT News" },
-    { url: "https://www.nasa.gov/news-release/feed/", category: "Kosmos", source: "NASA" },
-    { url: "https://www.esa.int/rssfeed/Our_Activities/Space_Science", category: "Kosmos", source: "ESA" },
-    { url: "https://www.sciencedaily.com/rss/computers_math/artificial_intelligence.xml", category: "AI", source: "ScienceDaily" },
-    { url: "https://news.mit.edu/rss/topic/artificial-intelligence2", category: "AI", source: "MIT News" },
-    { url: "https://www.sciencedaily.com/rss/plants_animals/biology.xml", category: "Biologia", source: "ScienceDaily" }
+    { url: "https://naukawpolsce.pl/rss.xml", category: "Nauka", source: "Nauka w Polsce", lang: "pl" },
+    { url: "https://kopalniawiedzy.pl/rss/wszystkie", category: "Nauka", source: "Kopalnia Wiedzy", lang: "pl" },
+    { url: "https://www.urania.edu.pl/rss.xml", category: "Kosmos", source: "Urania", lang: "pl" },
+    { url: "https://www.nasa.gov/news-release/feed/", category: "Kosmos", source: "NASA", lang: "en" },
+    { url: "https://www.esa.int/rssfeed/Our_Activities/Space_Science", category: "Kosmos", source: "ESA", lang: "en" },
+    { url: "https://news.mit.edu/rss/topic/artificial-intelligence2", category: "AI", source: "MIT News", lang: "en" },
+    { url: "https://www.nature.com/nature.rss", category: "Biologia", source: "Nature", lang: "en" }
 ];
 
 function extractImage(item) {
@@ -36,6 +37,23 @@ function extractImage(item) {
     return match ? match[1] : "";
 }
 
+// Darmowe tłumaczenie EN -> PL bez klucza API
+async function translateToPolish(text) {
+    if (!text) return "";
+    const trimmed = text.slice(0, 900);
+    try {
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=pl&dt=t&q=${encodeURIComponent(trimmed)}`;
+        const res = await fetch(url);
+        if (!res.ok) return text;
+        const data = await res.json();
+        return data[0].map(part => part[0]).join("");
+    } catch {
+        return text;
+    }
+}
+
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
 async function loadNews() {
     let output = [];
     const seenLinks = new Set();
@@ -45,8 +63,8 @@ async function loadNews() {
             const rss = await parser.parseURL(feed.url);
             console.log(`OK [${feed.category} - ${feed.source}]: pobrano ${rss.items.length} wpisów`);
 
-            rss.items.slice(0, 5).forEach(item => {
-                if (!item.link || seenLinks.has(item.link)) return;
+            for (const item of rss.items.slice(0, 4)) {
+                if (!item.link || seenLinks.has(item.link)) continue;
                 seenLinks.add(item.link);
 
                 const rawDesc = (item.contentSnippet || item.content || "")
@@ -54,12 +72,24 @@ async function loadNews() {
                     .replace(/\s+/g, " ")
                     .trim();
 
-                const shortDesc = rawDesc.length > 200 ? rawDesc.slice(0, 200) + "..." : rawDesc;
+                let title = item.title || "";
+                let fullDescription = rawDesc;
+
+                if (feed.lang === "en") {
+                    title = await translateToPolish(title);
+                    await sleep(250);
+                    fullDescription = await translateToPolish(rawDesc);
+                    await sleep(250);
+                }
+
+                const shortDesc = fullDescription.length > 200
+                    ? fullDescription.slice(0, 200) + "..."
+                    : fullDescription;
 
                 output.push({
-                    title: item.title,
+                    title,
                     description: shortDesc,
-                    fullDescription: rawDesc,
+                    fullDescription,
                     link: item.link,
                     category: feed.category,
                     source: feed.source,
@@ -67,7 +97,7 @@ async function loadNews() {
                     timestamp: item.pubDate ? new Date(item.pubDate).getTime() : 0,
                     image: extractImage(item)
                 });
-            });
+            }
         } catch (err) {
             console.error(`BŁĄD [${feed.category} - ${feed.source}] (${feed.url}):`, err.message);
         }
@@ -85,7 +115,7 @@ async function loadNews() {
         JSON.stringify(output, null, 2),
         "utf-8"
     );
-    console.log(`Zapisano łącznie ${output.length} unikalnych artykułów.`);
+    console.log(`Zapisano łącznie ${output.length} artykułów w języku polskim.`);
 }
 
 loadNews();
