@@ -12,14 +12,14 @@ const parser = new Parser({
     timeout: 15000,
     customFields: {
         item: [
-            ["media:content", "mediaContent"],
-            ["media:thumbnail", "mediaThumbnail"],
+            ["media:content", "mediaContent", { keepArray: true }],
+            ["media:thumbnail", "mediaThumbnail", { keepArray: true }],
+            ["media:group", "mediaGroup"],
             ["enclosure", "enclosure"]
         ]
     }
 });
 
-// 4 spójne kategorie: Kosmos, AI i Tech, Biologia, Fizyka i Ziemia
 const feeds = [
     // Polskojęzyczne źródła
     { url: "https://naukawpolsce.pl/rss.xml", category: "Fizyka i Ziemia", source: "Nauka w Polsce", lang: "pl" },
@@ -41,16 +41,58 @@ function makeShortId(str) {
     return crypto.createHash("sha1").update(str).digest("hex").slice(0, 10);
 }
 
-function extractImage(item) {
+// 1. Wyciąganie grafiki z różnych wariantów XML (enclosure, tablice media:content, media:group, img w HTML)
+function extractImageFromRss(item) {
     if (item.enclosure && item.enclosure.url) return item.enclosure.url;
-    if (item.mediaContent && item.mediaContent.$ && item.mediaContent.$.url) return item.mediaContent.$.url;
-    if (item.mediaThumbnail && item.mediaThumbnail.$ && item.mediaThumbnail.$.url) return item.mediaThumbnail.$.url;
-    const html = item.content || item["content:encoded"] || "";
-    const match = html.match(/<img[^>]+src="([^">]+)"/);
+
+    if (Array.isArray(item.mediaContent)) {
+        for (const m of item.mediaContent) {
+            if (m && m.$ && m.$.url) return m.$.url;
+        }
+    }
+
+    if (Array.isArray(item.mediaThumbnail)) {
+        for (const t of item.mediaThumbnail) {
+            if (t && t.$ && t.$.url) return t.$.url;
+        }
+    }
+
+    if (item.mediaGroup && item.mediaGroup["media:content"]) {
+        const grp = item.mediaGroup["media:content"];
+        if (Array.isArray(grp) && grp[0] && grp[0].$ && grp[0].$.url) return grp[0].$.url;
+        if (grp.$ && grp.$.url) return grp.$.url;
+    }
+
+    const html = item.content || item["content:encoded"] || item.summary || "";
+    const match = html.match(/<img[^>]+src=["']([^"'>]+)["']/i);
     return match ? match[1] : "";
 }
 
-// Czyszczenie powtarzających się stopek redakcyjnych i śmieci z kanałów RSS
+// 2. Fallback: pobranie obrazka okładkowego (og:image) bezpośrednio ze strony artykułu, jeśli RSS go nie zawiera
+async function fetchOgImage(articleUrl) {
+    try {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 6000);
+        const res = await fetch(articleUrl, {
+            signal: controller.signal,
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+            }
+        });
+        clearTimeout(timer);
+        if (!res.ok) return "";
+        const html = await res.text();
+        const ogMatch = html.match(/<meta[^>]+(?:property|name)=["'](?:og:image|twitter:image)["'][^>]+content=["']([^"']+)["']/i)
+            || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+(?:property|name)=["'](?:og:image|twitter:image)["']/i);
+        if (ogMatch && ogMatch[1]) {
+            return ogMatch[1].startsWith("http") ? ogMatch[1] : new URL(ogMatch[1], articleUrl).href;
+        }
+    } catch {
+        return "";
+    }
+    return "";
+}
+
 function cleanRssText(raw) {
     if (!raw) return "";
     return raw
@@ -66,7 +108,6 @@ function cleanRssText(raw) {
         .trim();
 }
 
-// Precyzyjny klasyfikator przypisujący do 4 spójnych kategorii
 function classifyCategory(title, description, defaultCategory) {
     const text = `${title} ${description}`.toLowerCase();
     if (/(sztuczn\w+ inteligencj|artificial intelligence|\bai\b|llm|gpt|sieci neuronow|uczeni\w+ maszynow|robotyk|algorytm|komputer\w* kwantow|półprzewodnik|procesor)/.test(text)) {
@@ -155,14 +196,12 @@ async function loadNews() {
     const newsFile = path.join(dataDir, "news.json");
     const now = Date.now();
 
-    // 1. Wczytanie istniejącego archiwum (pamięć tłumaczeń)
     const cachedMap = new Map();
     if (fs.existsSync(newsFile)) {
         try {
             const existing = JSON.parse(fs.readFileSync(newsFile, "utf-8"));
             for (const item of existing) {
                 if (item.link && (!item.timestamp || (now - item.timestamp) <= RETENTION_MS)) {
-                    // Migracja starych nazw kategorii do nowego spójnego układu v4.1
                     if (item.category === "AI") item.category = "AI i Tech";
                     if (item.category === "Nauka") item.category = "Fizyka i Ziemia";
                     if (!item.id) item.id = makeShortId(item.link);
@@ -175,7 +214,6 @@ async function loadNews() {
         }
     }
 
-    // 2. Pobranie nowych wpisów + ponawianie wcześniej nieudanych tłumaczeń
     for (const feed of feeds) {
         try {
             const rss = await parser.parseURL(feed.url);
@@ -185,7 +223,20 @@ async function loadNews() {
                 if (!item.link) continue;
 
                 const cached = cachedMap.get(item.link);
+                // Jeśli wpis jest już w archiwum, ma tłumaczenie i ma obrazek -> pomijamy
+                if (cached && (cached.lang === "pl" || cached.translated) && cached.image) {
+                    continue;
+                }
+
+                let imageUrl = (cached && cached.image) || extractImageFromRss(item);
+                if (!imageUrl) {
+                    imageUrl = await fetchOgImage(item.link);
+                }
+
+                // Jeśli brakowało tylko obrazka, a tłumaczenie było gotowe -> aktualizujemy sam obrazek
                 if (cached && (cached.lang === "pl" || cached.translated)) {
+                    cached.image = imageUrl;
+                    cachedMap.set(item.link, cached);
                     continue;
                 }
 
@@ -223,7 +274,7 @@ async function loadNews() {
                     translated,
                     date: item.pubDate ? new Date(item.pubDate).toLocaleDateString("pl-PL") : "",
                     timestamp: item.pubDate ? new Date(item.pubDate).getTime() : now,
-                    image: extractImage(item)
+                    image: imageUrl
                 });
             }
         } catch (err) {
@@ -231,7 +282,6 @@ async function loadNews() {
         }
     }
 
-    // Ponowienie próby tłumaczenia dla starszych wpisów z archiwum, które nadal mają translated: false
     let retryCount = 0;
     for (const [link, entry] of cachedMap.entries()) {
         if (entry.lang === "en" && !entry.translated && retryCount < 6) {
@@ -242,7 +292,6 @@ async function loadNews() {
                 entry.description = tr.description.length > 200 ? tr.description.slice(0, 200) + "..." : tr.description;
                 entry.translated = true;
                 cachedMap.set(link, entry);
-                console.log(`Uzupełniono zaległe tłumaczenie: ${entry.title.slice(0, 45)}...`);
             }
             retryCount++;
             await sleep(650);
@@ -254,9 +303,8 @@ async function loadNews() {
         .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))
         .slice(0, 120);
 
-    // Zapis zminifikowany (mniejszy rozmiar pliku o ~35% dla szybszego ładowania na mobile)
     fs.writeFileSync(newsFile, JSON.stringify(merged), "utf-8");
-    console.log(`Zapisano w archiwum łącznie ${merged.length} artykułów (zminifikowany JSON).`);
+    console.log(`Zapisano w archiwum łącznie ${merged.length} artykułów.`);
 
     await updateNasaApod(dataDir);
     generateSitemap();
