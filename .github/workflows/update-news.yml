@@ -23,12 +23,12 @@ jobs:
       - name: Instalacja zależności
         run: npm install
 
-      - name: Pobranie najnowszych newsów
+      - name: Pobranie i przetłumaczenie newsów
         run: node update-news.js
 
       - name: Zapisanie zmian w repozytorium
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add data/news.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Automatyczna aktualizacja newsów" && git push)
+          git add data/news.json data/apod.json sitemap.xml
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Automatyczna aktualizacja bazy odkryć" && git push)
