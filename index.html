@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Odkrywam Przyszłość – wyselekcjonowane odkrycia naukowe, AI, biologia i eksploracja kosmosu.">
+    <meta name="description" content="Odkrywam Przyszłość – wyselekcjonowane odkrycia naukowe: Kosmos, AI i Tech, Biologia oraz Fizyka i Ziemia.">
     <meta property="og:title" content="Odkrywam Przyszłość | Radar Naukowy">
-    <meta property="og:description" content="Przełomowe odkrycia z NASA, ESA i ScienceDaily w jednym miejscu.">
+    <meta property="og:description" content="Przełomowe odkrycia naukowe z polskich i światowych źródeł z automatycznym tłumaczeniem, archiwum 14-dniowym i obrazem dnia NASA.">
+    <meta property="og:image" content="https://markucjusz.github.io/Odkrywam-Przyszlosc/assets/img/preview.jpg">
     <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
     <title>Odkrywam Przyszłość — Radar Naukowy</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'%3E%3Ccircle cx='18' cy='18' r='16' fill='%23070b14' stroke='%2338bdf8' stroke-width='3'/%3E%3Ccircle cx='18' cy='18' r='5' fill='%2338bdf8'/%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,6 +39,25 @@
         </a>
 
         <div class="topbar-actions">
+            <span id="new-since-badge" class="new-badge" style="display:none;" title="Nowe publikacje od Twojej ostatniej wizyty">+0 nowych</span>
+
+            <button type="button" id="theme-toggle" class="icon-pill-btn" title="Przełącz motyw jasny / ciemny" aria-label="Przełącz motyw">
+                <svg id="theme-icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg id="theme-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
+
             <button type="button" id="bookmarks-toggle" class="bookmark-filter-btn" title="Pokaż zapisane artykuły">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
@@ -44,9 +65,10 @@
                 <span>Zapisane</span>
                 <span id="bookmarks-count" class="count-pill">0</span>
             </button>
-            <div class="status-pill" title="Automatyczna aktualizacja przez GitHub Actions">
+
+            <div class="status-pill" title="Automatyczna aktualizacja z pamięcią tłumaczeń">
                 <span class="pulse-dot"></span>
-                <span id="last-sync">RSS Live</span>
+                <span id="last-sync">RSS + APOD Live</span>
             </div>
         </div>
     </div>
@@ -54,42 +76,61 @@
 
 <section class="hero">
     <div class="container">
-        <div class="hero-kicker">TELEMETRIA WIEDZY • AI • BIOLOGIA • KOSMOS</div>
+        <div class="hero-kicker">KOSMOS • AI I TECH • BIOLOGIA • FIZYKA I ZIEMIA</div>
         <h1>Odkrycia, które definiują <span class="text-gradient">następną dekadę</span></h1>
-        <p class="hero-subtitle">Wyselekcjonowane doniesienia badawcze z agencji kosmicznych i instytutów naukowych. Bez szumu informacyjnego.</p>
+        <p class="hero-subtitle">Wyselekcjonowane doniesienia badawcze z polskich i światowych instytucji naukowych, oczyszczone ze szumu i wzbogacone o obraz dnia NASA.</p>
 
         <div class="stats-strip" id="stats-strip">
             <div class="stat-item">
                 <span class="stat-value" id="stat-total">0</span>
-                <span class="stat-label">Publikacji w bazie</span>
+                <span class="stat-label">Artykułów w archiwum</span>
             </div>
             <div class="stat-divider"></div>
             <div class="stat-item">
-                <span class="stat-value">3</span>
-                <span class="stat-label">Źródła (NASA, ESA, ScienceDaily)</span>
+                <span class="stat-value" id="stat-translated">0%</span>
+                <span class="stat-label">Treści po polsku</span>
             </div>
             <div class="stat-divider"></div>
             <div class="stat-item">
-                <span class="stat-value">6h</span>
-                <span class="stat-label">Cykl synchronizacji</span>
+                <span class="stat-value" id="stat-read">0</span>
+                <span class="stat-label">Przeczytanych przez Ciebie</span>
             </div>
         </div>
+
+        <div id="apod-banner" class="apod-banner" style="display:none;"></div>
 
         <div class="controls-bar">
             <nav class="filter-tabs" aria-label="Kategorie wiadomości">
                 <button type="button" class="active" data-category="Wszystkie">Wszystkie</button>
                 <button type="button" data-category="Kosmos">Kosmos</button>
-                <button type="button" data-category="AI">AI</button>
+                <button type="button" data-category="AI i Tech">AI i Tech</button>
                 <button type="button" data-category="Biologia">Biologia</button>
-                <button type="button" data-category="Nauka">Nauka</button>
+                <button type="button" data-category="Fizyka i Ziemia">Fizyka i Ziemia</button>
             </nav>
 
             <div class="controls-right">
+                <select id="lang-filter" class="source-select" aria-label="Filtruj według języka">
+                    <option value="Wszystkie">Język: Wszystkie (PL + EN)</option>
+                    <option value="pl">Tylko polskie (PL)</option>
+                    <option value="en">Zagraniczne (EN / tłum.)</option>
+                </select>
+
                 <select id="source-filter" class="source-select" aria-label="Filtruj według źródła">
                     <option value="Wszystkie">Wszystkie źródła</option>
+                    <option value="Nauka w Polsce">Nauka w Polsce</option>
+                    <option value="Kopalnia Wiedzy">Kopalnia Wiedzy</option>
+                    <option value="Urania">Urania</option>
+                    <option value="Spider's Web">Spider's Web</option>
                     <option value="NASA">NASA</option>
                     <option value="ESA">ESA</option>
-                    <option value="ScienceDaily">ScienceDaily</option>
+                    <option value="MIT News">MIT News</option>
+                    <option value="Nature">Nature</option>
+                </select>
+
+                <select id="sort-filter" class="source-select" aria-label="Sortowanie i widok">
+                    <option value="newest">Widok: Najnowsze</option>
+                    <option value="unread">Tylko nieprzeczytane</option>
+                    <option value="images">Tylko z ilustracjami</option>
                 </select>
 
                 <div class="search-box">
@@ -113,9 +154,13 @@
     </div>
 
     <div id="news-container" class="news-grid"></div>
+
+    <div id="pagination-bar" class="pagination-bar" style="display:none;">
+        <button type="button" id="load-more-btn" class="btn-secondary">Załaduj starsze odkrycia</button>
+    </div>
 </main>
 
-<!-- Okno podglądu artykułu (Modal) -->
+<!-- Okno podglądu artykułu (Modal z nawigacją strzałkami) -->
 <dialog id="article-modal" class="article-modal">
     <div class="modal-card">
         <button type="button" id="modal-close" class="modal-close" aria-label="Zamknij podgląd">✕</button>
@@ -125,28 +170,41 @@
                 <span id="modal-badge" class="badge"></span>
                 <span id="modal-source" class="modal-source"></span>
                 <span id="modal-date" class="modal-date"></span>
+                <span id="modal-readtime" class="modal-date"></span>
             </div>
             <h2 id="modal-title"></h2>
+            <p id="modal-original-title" class="modal-original-title"></p>
             <p id="modal-desc"></p>
             <div class="modal-actions">
                 <a id="modal-link" href="#" target="_blank" rel="noopener noreferrer" class="btn-primary">
-                    Otwórz pełny artykuł źródłowy ↗
+                    Otwórz artykuł źródłowy ↗
                 </a>
                 <button type="button" id="modal-bookmark" class="btn-secondary">
                     Zapisz na później
                 </button>
+                <button type="button" id="modal-share" class="btn-secondary">
+                    Kopiuj link podglądu
+                </button>
+            </div>
+            <div class="modal-nav-bar">
+                <button type="button" id="modal-prev" class="modal-nav-btn">← Poprzedni</button>
+                <span class="modal-nav-hint">Użyj strzałek ← / → na klawiaturze</span>
+                <button type="button" id="modal-next" class="modal-nav-btn">Następny →</button>
             </div>
         </div>
     </div>
 </dialog>
 
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
 <footer>
     <div class="container footer-inner">
         <div>
-            <strong>Odkrywam Przyszłość</strong> • Agregator odkryć naukowych i technologicznych
+            <strong>Odkrywam Przyszłość</strong> • Agregator odkryć naukowych, technologicznych i kosmicznych
         </div>
-        <div class="footer-right">
-            <span>Zasilane przez GitHub Actions &amp; RSS</span>
+        <div class="footer-links">
+            <span>Inne projekty:</span>
+            <a href="https://markucjusz.github.io/kroniki-cienia/" target="_blank" rel="noopener noreferrer">Kroniki Cienia (Gra RPG) ↗</a>
         </div>
     </div>
 </footer>
