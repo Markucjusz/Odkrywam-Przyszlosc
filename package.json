@@ -1,12 +1,13 @@
 {
   "name": "odkrywam-przyszlosc",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Automatyczny portal odkryć naukowych i technologicznych",
   "main": "update-news.js",
   "scripts": {
     "update": "node update-news.js"
   },
   "dependencies": {
+    "google-translate-api-x": "^10.7.2",
     "rss-parser": "^3.13.0"
   }
 }
