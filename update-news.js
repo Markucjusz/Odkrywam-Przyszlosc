@@ -150,22 +150,38 @@ async function translateArticle(title, description) {
 
 async function updateNasaApod(dataDir) {
     try {
-        const res = await fetch("https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY");
+        const res = await fetch("https://apod.nasa.gov/apod/astropix.html", {
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+            }
+        });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const apod = await res.json();
+        const html = await res.text();
 
-        const tr = await translateArticle(apod.title, apod.explanation);
+        // Wyciągnięcie obrazka ze strony APOD
+        const imgMatch = html.match(/<IMG\s+SRC="([^"]+)"/i);
+        const imageUrl = imgMatch ? new URL(imgMatch[1], "https://apod.nasa.gov/apod/").href : "";
+
+        // Wyciągnięcie tytułu (pogrubiony nagłówek pod zdjęciem)
+        const titleMatch = html.match(/<b>\s*([^<]+?)\s*<\/b>/i);
+        const rawTitle = titleMatch ? titleMatch[1].trim() : "NASA Astronomy Picture of the Day";
+
+        // Wyciągnięcie treści wyjaśnienia (Explanation:)
+        const expMatch = html.match(/Explanation:\s*<\/b>([\s\S]*?)<p>\s*<center>/i);
+        const rawDesc = expMatch ? cleanRssText(expMatch[1]) : "";
+
+        const tr = await translateArticle(rawTitle, rawDesc);
         const apodData = {
             title: tr.title,
-            originalTitle: apod.title,
+            originalTitle: rawTitle,
             description: tr.description.length > 260 ? tr.description.slice(0, 260) + "..." : tr.description,
-            image: apod.media_type === "image" ? apod.url : (apod.thumbnail_url || ""),
+            image: imageUrl,
             link: "https://apod.nasa.gov/apod/astropix.html",
-            date: apod.date || new Date().toISOString().slice(0, 10)
+            date: new Date().toLocaleDateString("pl-PL")
         };
 
         fs.writeFileSync(path.join(dataDir, "apod.json"), JSON.stringify(apodData), "utf-8");
-        console.log("Zaktualizowano NASA APOD:", apodData.title);
+        console.log("Zaktualizowano NASA APOD ze strony głównej:", apodData.title, imageUrl);
     } catch (err) {
         console.warn("Nie udało się pobrać NASA APOD:", err.message);
     }
