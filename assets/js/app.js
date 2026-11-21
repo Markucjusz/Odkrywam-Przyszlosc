@@ -49,10 +49,10 @@
 // --- 2. Stan aplikacji i zakładki (localStorage) ---
 let allNews = [];
 let activeCategory = "Wszystkie";
+let activeLang = "Wszystkie";
 let activeSource = "Wszystkie";
 let searchQuery = "";
 let showOnlySaved = false;
-let currentModalItem = null;
 
 const STORAGE_KEY = "odkrywam_przyszlosc_saved_v1";
 let savedLinks = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"));
@@ -89,6 +89,11 @@ function getThemeClass(category) {
     return map[category] || "theme-nauka";
 }
 
+function getLangLabel(item) {
+    if (item.lang === "pl") return "PL";
+    return item.translated ? "EN → PL" : "EN";
+}
+
 // --- 3. Modal podglądu ---
 const modal = document.getElementById("article-modal");
 document.getElementById("modal-close").addEventListener("click", () => modal.close());
@@ -97,7 +102,6 @@ modal.addEventListener("click", e => {
 });
 
 function openModal(item) {
-    currentModalItem = item;
     const category = item.category || "Nauka";
     const visual = document.getElementById("modal-visual");
     visual.className = `modal-visual ${getThemeClass(category)}`;
@@ -111,10 +115,19 @@ function openModal(item) {
         visual.appendChild(img);
     }
 
-    document.getElementById("modal-badge").textContent = category;
+    document.getElementById("modal-badge").textContent = `${category} • ${getLangLabel(item)}`;
     document.getElementById("modal-source").textContent = item.source || "";
     document.getElementById("modal-date").textContent = item.date || "";
     document.getElementById("modal-title").textContent = item.title;
+
+    const origEl = document.getElementById("modal-original-title");
+    if (item.originalTitle && item.originalTitle !== item.title) {
+        origEl.textContent = `Oryginał: ${item.originalTitle}`;
+        origEl.style.display = "block";
+    } else {
+        origEl.style.display = "none";
+    }
+
     document.getElementById("modal-desc").textContent = item.fullDescription || item.description;
     document.getElementById("modal-link").href = item.link;
 
@@ -153,7 +166,7 @@ function renderFeatured(list) {
 
     const tag = document.createElement("span");
     tag.className = "featured-tag";
-    tag.textContent = "Wyróżnione odkrycie";
+    tag.textContent = `Wyróżnione • ${getLangLabel(top)}`;
     visual.appendChild(tag);
 
     const content = document.createElement("div");
@@ -200,12 +213,14 @@ function renderAll() {
     const filtered = allNews.filter(item => {
         if (showOnlySaved && !savedLinks.has(item.link)) return false;
         if (activeCategory !== "Wszystkie" && item.category !== activeCategory) return false;
+        if (activeLang !== "Wszystkie" && (item.lang || "en") !== activeLang) return false;
         if (activeSource !== "Wszystkie" && item.source !== activeSource) return false;
         const q = searchQuery.toLowerCase().trim();
         if (q) {
             const inTitle = (item.title || "").toLowerCase().includes(q);
+            const inOrig = (item.originalTitle || "").toLowerCase().includes(q);
             const inDesc = (item.description || "").toLowerCase().includes(q);
-            if (!inTitle && !inDesc) return false;
+            if (!inTitle && !inOrig && !inDesc) return false;
         }
         return true;
     });
@@ -254,7 +269,7 @@ function renderAll() {
 
         const badge = document.createElement("span");
         badge.className = "badge";
-        badge.textContent = category;
+        badge.textContent = `${category} • ${getLangLabel(item)}`;
 
         const source = document.createElement("span");
         source.className = "source-tag";
@@ -324,6 +339,11 @@ document.querySelectorAll(".filter-tabs button").forEach(btn => {
     });
 });
 
+document.getElementById("lang-filter").addEventListener("change", e => {
+    activeLang = e.target.value;
+    renderAll();
+});
+
 document.getElementById("source-filter").addEventListener("change", e => {
     activeSource = e.target.value;
     renderAll();
@@ -344,10 +364,12 @@ bookmarksToggle.addEventListener("click", () => {
 document.getElementById("brand-reset").addEventListener("click", e => {
     e.preventDefault();
     activeCategory = "Wszystkie";
+    activeLang = "Wszystkie";
     activeSource = "Wszystkie";
     searchQuery = "";
     showOnlySaved = false;
     document.getElementById("search-input").value = "";
+    document.getElementById("lang-filter").value = "Wszystkie";
     document.getElementById("source-filter").value = "Wszystkie";
     bookmarksToggle.classList.remove("active");
     document.querySelectorAll(".filter-tabs button").forEach(b => {
