@@ -150,25 +150,33 @@ async function translateArticle(title, description) {
 
 async function updateNasaApod(dataDir) {
     try {
-        const res = await fetch("https://apod.nasa.gov/apod/astropix.html", {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 15000);
+
+        const apiUrl = "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY";
+        const res = await fetch(apiUrl, {
+            signal: controller.signal,
             headers: {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+                "Accept": "application/json",
+                "User-Agent": "Odkrywam-Przyszlosc/4.1"
             }
         });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const html = await res.text();
+        clearTimeout(timer);
 
-        // Wyciągnięcie obrazka ze strony APOD
-        const imgMatch = html.match(/<IMG\s+SRC="([^"]+)"/i);
-        const imageUrl = imgMatch ? new URL(imgMatch[1], "https://apod.nasa.gov/apod/").href : "";
+        if (!res.ok) throw new Error(`NASA APOD API HTTP ${res.status}`);
 
-        // Wyciągnięcie tytułu (pogrubiony nagłówek pod zdjęciem)
-        const titleMatch = html.match(/<b>\s*([^<]+?)\s*<\/b>/i);
-        const rawTitle = titleMatch ? titleMatch[1].trim() : "NASA Astronomy Picture of the Day";
+        const apod = await res.json();
+        const rawTitle = cleanRssText(apod.title || "NASA Astronomy Picture of the Day");
+        const rawDesc = cleanRssText(apod.explanation || "");
 
-        // Wyciągnięcie treści wyjaśnienia (Explanation:)
-        const expMatch = html.match(/Explanation:\s*<\/b>([\s\S]*?)<p>\s*<center>/i);
-        const rawDesc = expMatch ? cleanRssText(expMatch[1]) : "";
+        let imageUrl = "";
+        if (apod.media_type === "image" && apod.url) {
+            imageUrl = apod.url;
+        } else if (apod.hdurl) {
+            imageUrl = apod.hdurl;
+        } else if (apod.thumbnail_url) {
+            imageUrl = apod.thumbnail_url;
+        }
 
         const tr = await translateArticle(rawTitle, rawDesc);
         const apodData = {
@@ -176,14 +184,29 @@ async function updateNasaApod(dataDir) {
             originalTitle: rawTitle,
             description: tr.description.length > 260 ? tr.description.slice(0, 260) + "..." : tr.description,
             image: imageUrl,
-            link: "https://apod.nasa.gov/apod/astropix.html",
+            link: apod.copyright
+                ? "https://apod.nasa.gov/apod/astropix.html"
+                : "https://apod.nasa.gov/apod/astropix.html",
             date: new Date().toLocaleDateString("pl-PL")
         };
 
         fs.writeFileSync(path.join(dataDir, "apod.json"), JSON.stringify(apodData), "utf-8");
-        console.log("Zaktualizowano NASA APOD ze strony głównej:", apodData.title, imageUrl);
+        console.log("Zaktualizowano NASA APOD przez API:", apodData.title, imageUrl);
     } catch (err) {
         console.warn("Nie udało się pobrać NASA APOD:", err.message);
+
+        // Nie zastępujmy dotychczasowych danych pustym obrazem, jeśli API chwilowo zawiedzie.
+        const apodFile = path.join(dataDir, "apod.json");
+        if (!fs.existsSync(apodFile)) {
+            fs.writeFileSync(apodFile, JSON.stringify({
+                title: "Astronomiczne zdjęcie dnia NASA",
+                originalTitle: "NASA Astronomy Picture of the Day",
+                description: "",
+                image: "",
+                link: "https://apod.nasa.gov/apod/astropix.html",
+                date: new Date().toLocaleDateString("pl-PL")
+            }), "utf-8");
+        }
     }
 }
 
